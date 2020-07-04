@@ -1,18 +1,46 @@
 ---
-layout: page
 title: About
-permalink: /about/
+layout: page
+permalink: "/about/"
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+> 개발 노트
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
+<style>
+@import url(//fonts.googleapis.com/earlyaccess/nanumgothic.css);
+</style>
+- <h1>2020년 7월..</h1>
+<br><br>
 
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
+<div>
+
+아무 생각없이 다닌 대학교 4년. 내가 이룬 것이 무엇이 있을까 생각을 해보았다.<br><br>
+
+코딩에는 관심없이 알바나 하며 지냈던 1학년<br><br>
+
+남들 다 가는 군대 갔다와서 정신차리겠다고 생각한 2학년 2학기.<br><br>
+3학년때는 더 열심히 하겠다며 코딩 동아리를 들어가서 운영진을 맡으며 학교 생활.
+
+<br><br><br><br>
 
 
-[jekyll-organization]: https://github.com/jekyll
+...
+
+
+<br><br><br><br>
+
+
+
+어느덧 4학년 1학기를 마치고 여름방학이 시작되었다.<br><br>
+
+3학년때 열심히 살겠다고 백준 알고리즘을 풀고 scpc, 카카오 코테, 알고리즘 스터디 등을 하며 코딩동아리에 학교수업까지 소화하기는 하였으나<br><br>
+
+	나에게 남은 프로젝트는 거의 없었다. <del>(있더라도 형편없다 ㅎ)</del><br><br>
+
+개발에 대한 생각만 있었지 누구보다 열정을 가지고 살지는 않았던것 같다.<br><br>
+
+이번 방학, 꼭 남기는 것이 있으리라 다짐하며 이 블로그를 시작하였다.<br><br>
+
+남들보다 많이 늦었을지 몰라도 차근차근 쌓아 나가면 개발자로써 한 획을 긋는 사람이 되지 않을까 조심스럽게 생각해본다.
+	
+</div>
