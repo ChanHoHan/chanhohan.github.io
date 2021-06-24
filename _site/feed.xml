@@ -1,1 +1,66 @@
-<feed xmlns="http://www.w3.org/2005/Atom"> <id>https://chanhohan.github.io/</id><title>7ULY</title><subtitle>A minimal, portfolio, sidebar, bootstrap Jekyll theme with responsive web design and focuses on text presentation.</subtitle> <updated>2021-06-24T13:41:41+09:00</updated> <author> <name>Chan Ho Han</name> <uri>https://chanhohan.github.io/</uri> </author><link rel="self" type="application/atom+xml" href="https://chanhohan.github.io/feed.xml"/><link rel="alternate" type="text/html" hreflang="en-US" href="https://chanhohan.github.io/"/> <generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator> <rights> © 2021 Chan Ho Han </rights> <icon>/assets/img/favicons/favicon.ico</icon> <logo>/assets/img/favicons/favicon-96x96.png</logo> <entry><title>Writing a New Post</title><link href="https://chanhohan.github.io/posts/write-a-new-post/" rel="alternate" type="text/html" title="Writing a New Post" /><published>2019-08-08T15:10:00+09:00</published> <updated>2021-06-24T11:39:25+09:00</updated> <id>https://chanhohan.github.io/posts/write-a-new-post/</id> <content src="https://chanhohan.github.io/posts/write-a-new-post/" /> <author> <name>Cotes Chung</name> </author> <category term="Blogging" /> <category term="Tutorial" /> <summary> Naming and Path Create a new file named YYYY-MM-DD-TITLE.EXTENSION and put it in the _posts/ of the root directory. Please note that the EXTENSION must be one of md and markdown.o Front Matter Basically, you need to fill the Front Matter as below at the top of the post: --- title: TITLE date: YYYY-MM-DD HH:MM:SS +/-TTTT categories: [TOP_CATEGORIE, SUB_CATEGORIE] tags: [TAG] # TAG names ... </summary> </entry> </feed>
+
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>https://chanhohan.github.io/</id>
+  <title>7ULY</title>
+  <subtitle>A minimal, portfolio, sidebar, bootstrap Jekyll theme with responsive web design and focuses on text presentation.</subtitle>
+  <updated>2021-06-24T16:16:46+09:00</updated>
+  <author>
+    <name>Chan Ho Han</name>
+    <uri>https://chanhohan.github.io/</uri>
+  </author>
+  <link rel="self" type="application/atom+xml" href="https://chanhohan.github.io/feed.xml"/>
+  <link rel="alternate" type="text/html" hreflang="en-US"
+    href="https://chanhohan.github.io/"/>
+  <generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator>
+  <rights> © 2021 Chan Ho Han </rights>
+  <icon>/assets/img/favicons/favicon.ico</icon>
+  <logo>/assets/img/favicons/favicon-96x96.png</logo>
+
+
+  
+  <entry>
+    <title>Writing a New Post</title>
+    <link href="https://chanhohan.github.io/posts/write-a-new-post/" rel="alternate" type="text/html" title="Writing a New Post" />
+    <published>2019-08-08T15:10:00+09:00</published>
+  
+    <updated>2019-08-08T15:10:00+09:00</updated>
+  
+    <id>https://chanhohan.github.io/posts/write-a-new-post/</id>
+    <content src="https://chanhohan.github.io/posts/write-a-new-post/" />
+    <author>
+      <name>Cotes Chung</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Tutorial" />
+    
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      Naming and Path
+
+Create a new file named YYYY-MM-DD-TITLE.EXTENSION and put it in the _posts/ of the root directory. Please note that the EXTENSION must be one of md and markdown.
+
+Front Matter
+
+Basically, you need to fill the [Fro
+
+    </summary>
+  
+
+  </entry>
+
+</feed>
+
+
