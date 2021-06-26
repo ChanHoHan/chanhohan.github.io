@@ -1,11 +1,33 @@
 ---
-title: Jekyll 삽질기
+title: Github Blog 만들기
 author: Chan Ho Han
 date: 2021-06-25 00:00:00 +0900
 categories: [Blogging]
 tags: [first post]
 comments: true
 ---
+
+얼마 전부터 기술 블로그를 따로 만들어 보고 싶어졌는데, 예전부터 관심이 있었던 github 블로그를 만들어 보면 좋겠다는 막연한 생각에 시작하게 되었습니다.
+
+테마를 다운받고 글만 작성하면 되겠다 싶었는데 생각보다 많은 오류를 내뿜어서 쉽지 않았습니다.
+
+## 0.  환경 준비
+
+Jekyll 사용을 위한 ruby 설치
+
+[Installation](https://jekyllrb.com/docs/installation/)
+
+- mac
+
+```bash
+brew install ruby
+```
+
+- ubuntu
+
+```bash
+sudo apt-get install ruby-full build-essential zlib1g-dev
+```
 
 ## 1. 테마 고르기
 
@@ -42,10 +64,22 @@ clone을 통해 테마를 다운로드 해준 후, [chanhohan.github.io](http://
 
 ## 5. Deployment
 
-이 곳이 삽질의 시작이었습니다.
-
 ![chripy-getting-start](https://user-images.githubusercontent.com/46598292/123353845-653cd780-d59d-11eb-8d17-557c6fbf5889.jpg){: width="60%" height="60%"}
 
-안내 문서에 따르면, safe mode의 이유로 GitHub Actinos를 사용해야하고, 그것을 위해 .github/workflows/pages-deploy.yml이 있어야 한다고 합니다.
+안내 문서에 따르면, safe mode의 이유로 GitHub Actions를 사용해야하고, 그것을 위해 .github/workflows/pages-deploy.yml이 있어야 한다고 합니다.
 
 링크된 문서의 내용을 그대로 복사하여 만든 후 커밋 및 푸쉬를 해줍니다.
+
+![github-workflow](https://user-images.githubusercontent.com/46598292/123497198-296e4480-d667-11eb-993e-5df15cd3347d.jpg){: width="60%" height="60%"}
+
+
+## 6. Troubleshooting
+
+ -  "The jekyll-theme-chirpy theme is not currently supported on GitHub Pages." 
+![image](https://user-images.githubusercontent.com/46598292/123497455-96360e80-d668-11eb-98aa-f020ce8e9b9a.png){: width="60%" height="60%"}
+
+Settings > Pages 에서 Source 부분에 Branch가 gh-pages으로 되어있어야 했습니다.  
+
+ -  "Your site is having problems building: Page build failed"
+
+이 경우는 문법상의 오류 때문에 빌드를 실패해서 생기는 오류라고 합니다.

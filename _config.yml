@@ -164,3 +164,7 @@ jekyll-archives:
   permalinks:
     tag: /tags/:name/
     category: /categories/:name/
+
+#Disqus Comment
+disqus_url: disqus url
+disqus_id: disqus id
