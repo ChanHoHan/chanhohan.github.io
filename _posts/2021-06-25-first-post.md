@@ -4,9 +4,10 @@ author: Chan Ho Han
 date: 2021-06-25 00:00:00 +0900
 categories: [Blogging]
 tags: [first post]
+comments: true
 ---
 
-# 1. 테마 고르기
+## 1. 테마 고르기
 
 [http://jekyllthemes.org/](http://jekyllthemes.org/])
 
@@ -14,7 +15,7 @@ tags: [first post]
 
 저는 첫 페이지에 제 마음에 드는 테마가 바로 보였는데, 바로 [chripy](https://github.com/cotes2020/jekyll-theme-chirpy) 입니다. chripy theme를 기준으로 글을 작성해 보겠습니다.
 
-# 2. GIT repo 만들기
+## 2. GIT repo 만들기
 
 ![github_io_image](https://user-images.githubusercontent.com/46598292/123350024-1ee37a80-d595-11eb-8b23-2699a8b8c131.jpg){: width="60%" height="60%"}
 
@@ -45,4 +46,6 @@ clone을 통해 테마를 다운로드 해준 후, [chanhohan.github.io](http://
 
 ![chripy-getting-start](https://user-images.githubusercontent.com/46598292/123353845-653cd780-d59d-11eb-8d17-557c6fbf5889.jpg){: width="60%" height="60%"}
 
+안내 문서에 따르면, safe mode의 이유로 GitHub Actinos를 사용해야하고, 그것을 위해 .github/workflows/pages-deploy.yml이 있어야 한다고 합니다.
 
+링크된 문서의 내용을 그대로 복사하여 만든 후 커밋 및 푸쉬를 해줍니다.
