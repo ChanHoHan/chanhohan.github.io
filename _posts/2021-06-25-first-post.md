@@ -4,7 +4,7 @@ author: Chan Ho Han
 date: 2021-06-25 00:00:00 +0900
 categories: [Blogging]
 tags: [first post]
-comments: true
+comments : true
 ---
 
 얼마 전부터 기술 블로그를 따로 만들어 보고 싶어졌는데, 예전부터 관심이 있었던 github 블로그를 만들어 보면 좋겠다는 막연한 생각에 시작하게 되었습니다.

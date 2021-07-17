@@ -4,7 +4,7 @@ author: Chan Ho Han
 date: 2021-07-17 07:00:00 +0900
 categories: [etc]
 tags: [알고리즘, 삼성 sds, 삼성 sds 특강 후기]
-comments: true
+comments : true
 ---
 
 # 들어가기 전에
