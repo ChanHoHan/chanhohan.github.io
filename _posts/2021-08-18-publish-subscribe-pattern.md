@@ -1,7 +1,7 @@
 ---
 title: Publish-Subscribe 패턴에 대해
 author: Chan Ho Han
-date: 2021-08-18 03:00:00 +0900
+date: 2021-08-18 12:10:00 +0900
 categories: [디자인패턴]
 tags: [옵저버패턴, 발행구독패턴]
 comments : true
