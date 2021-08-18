@@ -45,7 +45,7 @@ _emitter에 새로운 EventEmitter 객체를 참조시켜 놓음으로써 이벤
 
 ## 💡 EventEmitter를 통해 pub-sub 구현해보기
 ```javascript
-class Youtuber{ // 유튜버 클레스
+class Youtuber{ // 유튜버 클래스
     constructor(name) {
         this.name = name;
     }
@@ -57,7 +57,7 @@ class Youtuber{ // 유튜버 클레스
     }
 }
 
-class Sub{ // 구독자 클레스
+class Sub{ // 구독자 클래스
     constructor(name, age) {
         this.name = name;
         this.age = age
