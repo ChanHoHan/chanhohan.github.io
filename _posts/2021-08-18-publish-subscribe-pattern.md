@@ -28,9 +28,9 @@ comments : true
 
 ## 💡 구현을 위해 EventEmitter 간단 설명
 
-EventEmitter의 동작원리와 사용방법은 Node개발의 핵심 중 하나입니다. EventEmitter는 이벤트의 비동기처리를 가능하게 한다. 핵심 구조는 아래 코드를 통해 살펴보겠습니다.
+EventEmitter의 동작원리와 사용방법은 Node개발의 핵심 중 하나입니다. EventEmitter는 이벤트의 비동기처리를 가능하게 합니다. 핵심 구조는 아래 코드를 통해 살펴보겠습니다.
 
-```javascript=
+```javascript
 const eventEmitter = require('events').EventEmitter;
 const _emitter = new eventEmitter();
 let counter = 0;
