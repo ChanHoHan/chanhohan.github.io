@@ -49,6 +49,15 @@ social:
 google_site_verification: google_meta_tag_verification # change to your verification string
 # --------------------------
 
+# Analytics
+analytics:
+  provider               : "google-gtag" 
+                          # false (default), "google", "google-universal", "google-gtag", "custom"
+  google:
+    tracking_id          : "G-MYCDNPJDCK"
+    anonymize_ip         : # true, false (default)
+
+
 google_analytics:
   id: ''              # fill in your Google Analytics ID
   # Google Analytics pageviews report settings
