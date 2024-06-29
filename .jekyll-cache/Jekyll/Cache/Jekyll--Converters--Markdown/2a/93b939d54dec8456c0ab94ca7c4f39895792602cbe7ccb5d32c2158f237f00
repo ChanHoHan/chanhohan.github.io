@@ -1,0 +1,274 @@
+I"UR<h2 id="-publishsubscribe-pattern-이란">💡 Publish–subscribe pattern 이란?</h2>
+<p>발행-구독 모델은 비동기 메시징 패러다임입니다.
+<br />
+유튜브 구독으로 생각해 보겠습니다. 유튜브 사용자 X가 유튜버 Y를 구독하겠다고 신청을 하게 되면, 구독이 되는 것을 생각하시면 됩니다. 유튜버 Y가 자신의 구독자들에게 알림을 보낸다면, 중간에 Message Broker가 유튜버 Y의 구독자들에게 알림을 보내기 때문에, 유튜버 Y는 구독자들이 아닌 Message Broker와만 관계를 맺으면 됩니다.</p>
+
+<p><img src="https://user-images.githubusercontent.com/46598292/129820554-fb2e9d5d-ab96-4ce5-9657-c28b8cc0c8dd.png" alt="image" />
+이미지 출처 : <a href="https://docs.microsoft.com/ko-kr/dotnet/architecture/dapr-for-net-developers/publish-subscribe">microsoft docs</a></p>
+
+<h2 id="-observer-pattern과-비교">💡 Observer Pattern과 비교</h2>
+<p><a href="https://ko.wikipedia.org/wiki/%EC%98%B5%EC%84%9C%EB%B2%84_%ED%8C%A8%ED%84%B4">Observer Pattern</a>과 유사하지만, Observer Pattern의 경우에는 observer와 subject가 직접적인 관계를 갖고 있는 것에 반해,  pub-sub 패턴의 경우 publisher와 subscriber가 서로를 전혀 몰라도 상관 없다는 차이가 있습니다.</p>
+
+<h2 id="-이걸-왜-알아야-해">💡 이걸 왜 알아야 해?</h2>
+<p>아무리 모듈화를 잘 해놓았다고 하더라도 웹 애플리케이션(웹 앱)은 선형적으로 동작하는 일이 거의 없기 때문에 “비동기” 와 “경합 상태”를 항상 고려해야합니다. 이 pub-sub 패턴은 여러 모듈들 사이에서 어떤 식으로 데이터를 주고받을지를 고민할 때 많이 쓰는 패턴입니다.</p>
+
+<p><img src="https://user-images.githubusercontent.com/46598292/129821475-2e31938f-a125-41c1-8c2b-213231ad4253.png" alt="image" />
+이미지 출처 : <a href="https://rinae.dev/posts/why-every-beginner-front-end-developer-should-know-publish-subscribe-pattern-kr">here</a></p>
+
+<h2 id="-구현을-위해-eventemitter-간단-설명">💡 구현을 위해 EventEmitter 간단 설명</h2>
+
+<p>EventEmitter의 동작원리와 사용방법은 Node개발의 핵심 중 하나입니다. EventEmitter는 이벤트의 비동기처리를 가능하게 합니다. 핵심 구조는 아래 코드를 통해 살펴보겠습니다.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="kd">const</span> <span class="nx">eventEmitter</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">events</span><span class="dl">'</span><span class="p">).</span><span class="nx">EventEmitter</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">_emitter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eventEmitter</span><span class="p">();</span>
+<span class="kd">let</span> <span class="nx">counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">_emitter</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="dl">'</span><span class="s1">timed</span><span class="dl">'</span><span class="p">,</span> <span class="nx">counter</span><span class="o">++</span><span class="p">);},</span> <span class="mi">3000</span><span class="p">);</span>
+<span class="nx">_emitter</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">timed</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">tiemd </span><span class="dl">'</span><span class="o">+</span><span class="nx">data</span><span class="p">);</span>
+<span class="p">})</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>_emitter에 새로운 EventEmitter 객체를 참조시켜 놓음으로써 이벤트를 등록할 수 있게 됩니다. setInterval을 통해서 3초마다 timed 이벤트를 발생시키고, _emitter.on을 통해서 timed 이벤트에 대한 익명 함수를 핸들러로 등록시킵니다. 이런 식으로 이벤트를 등록하고, 사용할 수 있습니다.</p>
+
+<h2 id="-eventemitter를-통해-pub-sub-구현해보기">💡 EventEmitter를 통해 pub-sub 구현해보기</h2>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+</pre></td><td class="rouge-code"><pre><span class="kd">class</span> <span class="nx">Youtuber</span><span class="p">{</span> <span class="c1">// 유튜버 클래스</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">pubAlert</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">getName</span><span class="p">}</span><span class="s2">님 ! </span><span class="p">${</span><span class="nx">name</span><span class="p">}</span><span class="s2">님 께서 구독을 하셨답니다 !!`</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="kd">get</span> <span class="nx">getName</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nx">Sub</span><span class="p">{</span> <span class="c1">// 구독자 클래스</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">age</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">age</span> <span class="o">=</span> <span class="nx">age</span>
+    <span class="p">}</span>
+    <span class="nx">subAlert</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">님 ! 유튜버 </span><span class="p">${</span><span class="nx">name</span><span class="p">}</span><span class="s2">에게 알림이 왔어요 !!`</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="kd">get</span> <span class="nx">getName</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nx">MessageBroker</span><span class="p">{</span>
+    <span class="kd">constructor</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">pubList</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="p">}</span>
+    <span class="nx">addSub</span><span class="p">(</span><span class="nx">pub</span><span class="p">,</span> <span class="nx">sub</span><span class="p">){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">pub</span><span class="p">.</span><span class="nx">getName</span> <span class="k">in</span> <span class="k">this</span><span class="p">.</span><span class="nx">pubList</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">말도 안되는 일이지만, 유튜버가 없습니다 .. (?)</span><span class="dl">"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">pubList</span><span class="p">[</span><span class="nx">pub</span><span class="p">.</span><span class="nx">getName</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">sub</span><span class="p">);</span> <span class="c1">// 구독자 객체 추가</span>
+    <span class="p">}</span>
+    <span class="nx">subscribers</span><span class="p">(</span><span class="nx">pub</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">pubList</span><span class="p">[</span><span class="nx">pub</span><span class="p">.</span><span class="nx">getName</span><span class="p">];</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">youtuber</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Youtuber</span><span class="p">(</span><span class="dl">"</span><span class="s2">이지금</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">subA</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Sub</span><span class="p">(</span><span class="dl">"</span><span class="s2">장그래</span><span class="dl">"</span><span class="p">,</span> <span class="mi">26</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">subB</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Sub</span><span class="p">(</span><span class="dl">"</span><span class="s2">장백기</span><span class="dl">"</span><span class="p">,</span> <span class="mi">26</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">subC</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Sub</span><span class="p">(</span><span class="dl">"</span><span class="s2">안영이</span><span class="dl">"</span><span class="p">,</span> <span class="mi">26</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">messageBroker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MessageBroker</span><span class="p">();</span>
+
+<span class="nx">messageBroker</span><span class="p">.</span><span class="nx">pubList</span><span class="p">[</span><span class="nx">youtuber</span><span class="p">.</span><span class="nx">getName</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span> <span class="c1">// 유튜버 추가</span>
+
+<span class="kd">const</span> <span class="nx">eventEmitter</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">events</span><span class="dl">'</span><span class="p">).</span><span class="nx">EventEmitter</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">event</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">eventEmitter</span><span class="p">();</span>
+<span class="nx">event</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">subscribe</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">youtuberA</span><span class="p">,</span> <span class="nx">subscriber</span><span class="p">,</span> <span class="nx">messageBroker</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 'subscribe'라는 이벤트 등록. 구독자 객체를 받음</span>
+    <span class="nx">messageBroker</span><span class="p">.</span><span class="nx">addSub</span><span class="p">(</span><span class="nx">youtuberA</span><span class="p">,</span> <span class="nx">subscriber</span><span class="p">);</span>
+    <span class="nx">youtuberA</span><span class="p">.</span><span class="nx">pubAlert</span><span class="p">(</span><span class="nx">subscriber</span><span class="p">.</span><span class="nx">getName</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">event</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">youtuber_alert</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">youtuberA</span><span class="p">){</span>
+    <span class="kd">let</span> <span class="nx">sub</span> <span class="o">=</span> <span class="nx">messageBroker</span><span class="p">.</span><span class="nx">subscribers</span><span class="p">(</span><span class="nx">youtuberA</span><span class="p">);</span> <span class="c1">// youtuber의 구독자 배열을 받아옴</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">subObject</span> <span class="k">of</span> <span class="nx">sub</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">subObject</span><span class="p">.</span><span class="nx">subAlert</span><span class="p">(</span><span class="nx">youtuberA</span><span class="p">.</span><span class="nx">getName</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+
+<span class="c1">// 구독해보기</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">------- 구독 -------</span><span class="dl">'</span><span class="p">)</span>
+<span class="nx">event</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="dl">'</span><span class="s1">subscribe</span><span class="dl">'</span><span class="p">,</span> <span class="nx">youtuber</span><span class="p">,</span> <span class="nx">subA</span><span class="p">,</span> <span class="nx">messageBroker</span><span class="p">);</span>
+<span class="nx">event</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="dl">'</span><span class="s1">subscribe</span><span class="dl">'</span><span class="p">,</span> <span class="nx">youtuber</span><span class="p">,</span> <span class="nx">subB</span><span class="p">,</span> <span class="nx">messageBroker</span><span class="p">);</span>
+<span class="nx">event</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="dl">'</span><span class="s1">subscribe</span><span class="dl">'</span><span class="p">,</span> <span class="nx">youtuber</span><span class="p">,</span> <span class="nx">subC</span><span class="p">,</span> <span class="nx">messageBroker</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">------- 구독 완료 -------</span><span class="dl">'</span><span class="p">)</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">-------구독자들에게 알림 보내기-------</span><span class="dl">'</span><span class="p">)</span>
+<span class="c1">// 3초에 한 번씩 알림 보내기</span>
+<span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="dl">'</span><span class="s1">youtuber_alert</span><span class="dl">'</span><span class="p">,</span> <span class="nx">youtuber</span><span class="p">);</span>
+<span class="p">},</span> <span class="mi">3000</span><span class="p">);</span>
+<span class="c1">// 1초에 한 번씩 출력</span>
+<span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">이 출력은 비동기임을 보여주기 위함입니다 !</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ul>
+  <li>
+    <h2 id="코드-설명">코드 설명</h2>
+    <ol>
+      <li>처음에 youtuber, 구독자 객체, messageBroker를 각각 1개, 3개, 1개를 만듭니다.</li>
+      <li>구독에 해당하는 ‘subscribe’와 유튜버가 알림을 보내는 ‘youtuber_alert’ 이벤트를 각각 등록해줍니다.</li>
+      <li>구독자들은 유튜버를 구독하게 되고, 유튜버는 구독자가 구독했음을 알게 됩니다.</li>
+      <li>setInterval를 통해서 3초에 한 번씩 유튜버에게 알림을 받게됩니다. 이벤트의 익명함수는 객체를 받게 되는데, messageBroker에 등록된 유튜버와 그에 대응되는 구독자들 객체에 구현되어있는 함수를 호출함으로써 각 객체가 알림을 받았음을 알게 됩니다.</li>
+      <li>모든 작업이 비동기로 처리되고 있음을 보여주기 위해 1초에 한 번씩 의미없는 문구를 출력해줍니다.</li>
+    </ol>
+  </li>
+  <li>
+    <h2 id="실행-결과">실행 결과</h2>
+  </li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre></td><td class="rouge-code"><pre>➜  pub-sub git:(master) ✗ node test.js
+------- 구독 -------
+이지금님 ! 장그래님 께서 구독을 하셨답니다 !!
+이지금님 ! 장백기님 께서 구독을 하셨답니다 !!
+이지금님 ! 안영이님 께서 구독을 하셨답니다 !!
+------- 구독 완료 -------
+-------구독자들에게 알림 보내기-------
+(0) 이 출력은 비동기임을 보여주기 위함입니다 !
+(1) 이 출력은 비동기임을 보여주기 위함입니다 !
+장그래님 ! 유튜버 이지금에게 알림이 왔어요 !!
+장백기님 ! 유튜버 이지금에게 알림이 왔어요 !!
+안영이님 ! 유튜버 이지금에게 알림이 왔어요 !!
+(2) 이 출력은 비동기임을 보여주기 위함입니다 !
+(3) 이 출력은 비동기임을 보여주기 위함입니다 !
+(4) 이 출력은 비동기임을 보여주기 위함입니다 !
+장그래님 ! 유튜버 이지금에게 알림이 왔어요 !!
+장백기님 ! 유튜버 이지금에게 알림이 왔어요 !!
+안영이님 ! 유튜버 이지금에게 알림이 왔어요 !!
+(5) 이 출력은 비동기임을 보여주기 위함입니다 !
+(6) 이 출력은 비동기임을 보여주기 위함입니다 !
+(7) 이 출력은 비동기임을 보여주기 위함입니다 !
+장그래님 ! 유튜버 이지금에게 알림이 왔어요 !!
+장백기님 ! 유튜버 이지금에게 알림이 왔어요 !!
+안영이님 ! 유튜버 이지금에게 알림이 왔어요 !!
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="-참고자료">💡 참고자료</h2>
+
+<p>깊게 이해하기 좋은 <a href="https://rinae.dev/posts/why-every-beginner-front-end-developer-should-know-publish-subscribe-pattern-kr">링크</a></p>
+
+<p>https://arclife.tistory.com/7<br />
+https://semtax.tistory.com/24</p>
+:ET

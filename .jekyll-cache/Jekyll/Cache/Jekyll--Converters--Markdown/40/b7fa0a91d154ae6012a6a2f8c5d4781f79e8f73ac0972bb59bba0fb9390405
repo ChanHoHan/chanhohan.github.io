@@ -1,0 +1,5 @@
+I"]<h2 id="-publishsubscribe-pattern-이란">💡 Publish–subscribe pattern 이란?</h2>
+<p>발행-구독 모델은 비동기 메시징 패러다임입니다.
+<br />
+유튜브 구독으로 생각해 보겠습니다. 유튜브 사용자 X가 유튜버 Y를 구독하겠다고 신청을 하게 되면, 구독이 되는 것을 생각하시면 됩니다. 유튜버 Y가 자신의 구독자들에게 알림을 보낸다면, 중간에 Message Broker가 유튜버 Y의 구독자들에게 알림을 보내기 때문에, 유튜버 Y는 구독자들이 아닌 Message Broker와만 관계를 맺으면 됩니다.</p>
+:ET

@@ -1,0 +1,271 @@
+I"KY<h2 id="2021-카카오-채용연계형-인턴십-4번---미로-탈출">2021 카카오 채용연계형 인턴십 4번 - 미로 탈출</h2>
+
+<p><a href="https://programmers.co.kr/learn/courses/30/lessons/81304">문제 바로가기</a></p>
+
+<h3 id="자료구조">자료구조</h3>
+<ul>
+  <li>그래프 (인접 리스트)</li>
+  <li>비트마스크</li>
+</ul>
+
+<h3 id="문제-간단-설명">문제 간단 설명</h3>
+
+<p><img src="https://user-images.githubusercontent.com/46598292/129513690-97bec781-6bff-4905-b274-0f90f3050c40.png" alt="image" /></p>
+
+<ul>
+  <li>위 그림에서, Start에서 출발하여 End에 도착하기까지의 최단 거리를 구하면 됩니다.</li>
+  <li>Trap을 밟게되면, Trap과 인접한 간선들의 방향이 반대가 됩니다.</li>
+</ul>
+
+<h3 id="풀이">풀이</h3>
+
+<ol>
+  <li>함정을 밟을 수 있는 경우의 수를 모두 기록해 놓습니다.
+    <ul>
+      <li>함정의 갯수의 최대값은 10 이므로 상태는 원래 가능한 상태에 2의 10승인 1024배 만큼 늘어나게 됩니다.</li>
+      <li>원래 노드의 간선의 최대 갯수는 3000개 이므로 4(= sizeof(int)) * 3000이고, 이것에 함정이 추가된 상태인 1024를 곱하면 약 12MB 정도 되므로, 문제를 푸는데에는 무리가 없을 것입니다. (틀릴 수도 있어서.. 피드백 환영합니다)</li>
+    </ul>
+  </li>
+  <li>다익스트라를 적용합니다.
+    <ul>
+      <li>다음 노드가 트랩일 때</li>
+    </ul>
+    <ul>
+      <li>트랩을 밟아왔는데, 다음 것이 이미 밟았던 트랩이면
+        <ul>
+          <li>트랩 밟은 것을 없앱니다. 이유는, 밟은 트랩을 또 밟는 것은 안밟은 것이랑 같으므로.</li>
+          <li>다익스트라 진행</li>
+        </ul>
+      </li>
+      <li>다음 것이 처음 밟는 트랩이면
+        <ul>
+          <li>트랩 밟은걸로 처리합니다.</li>
+          <li>다익스트라 진행
+            <ul>
+              <li>다음 노드가 트랩이 아닐 때</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>다익스트라 진행</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="코드">코드</h3>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+</pre></td><td class="rouge-code"><pre><span class="cp">#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;queue&gt;
+#include &lt;map&gt;
+#include &lt;cstring&gt;
+#define MAX 999999999
+</span>
+<span class="n">std</span><span class="o">::</span><span class="n">priority_queue</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="o">&gt;</span> <span class="n">pq</span><span class="p">;</span><span class="c1">//dist, node, bit</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="n">g_map</span><span class="p">[</span><span class="mi">1025</span><span class="p">][</span><span class="mi">1000</span><span class="p">];</span> <span class="c1">//node, cost</span>
+<span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">trap_map</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">&gt;</span> <span class="n">g_road</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">trap_size</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">dist</span><span class="p">[</span><span class="mi">1025</span><span class="p">][</span><span class="mi">1001</span><span class="p">];</span>
+
+<span class="kt">bool</span> <span class="nf">is_trap</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">trap_map</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">!=</span> <span class="n">trap_map</span><span class="p">.</span><span class="n">end</span><span class="p">())</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">trap_check</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">bitmask</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">is_trap</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">bitmask</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">trap_map</span><span class="p">[</span><span class="n">a</span><span class="p">])))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">combination</span><span class="p">(</span><span class="kt">int</span> <span class="n">max_depth</span><span class="p">,</span> <span class="kt">int</span> <span class="n">depth</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">,</span> <span class="kt">int</span> <span class="n">bitmask</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="n">max_depth</span> <span class="o">==</span> <span class="n">depth</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="n">i</span> <span class="o">:</span> <span class="n">g_road</span><span class="p">)</span> <span class="p">{</span>
+			<span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+			<span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+			<span class="kt">int</span> <span class="n">cost</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+			<span class="c1">// 현재 트랩인데 다음 것이 트랩이 아닌 경우, 또는 현재 트랩이 아닌데, 다음 것이 트랩인 경우</span>
+			<span class="k">if</span> <span class="p">((</span><span class="n">trap_check</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">bitmask</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="o">!</span><span class="n">trap_check</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">bitmask</span><span class="p">)))</span> <span class="o">||</span>
+					<span class="p">(</span><span class="o">!</span><span class="n">trap_check</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">bitmask</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">trap_check</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">bitmask</span><span class="p">)))</span>
+				<span class="n">g_map</span><span class="p">[</span><span class="n">bitmask</span><span class="p">][</span><span class="n">b</span><span class="p">].</span><span class="n">push_back</span><span class="p">({</span><span class="n">a</span><span class="p">,</span> <span class="n">cost</span><span class="p">});</span>
+			<span class="k">else</span>
+				<span class="n">g_map</span><span class="p">[</span><span class="n">bitmask</span><span class="p">][</span><span class="n">a</span><span class="p">].</span><span class="n">push_back</span><span class="p">({</span><span class="n">b</span><span class="p">,</span> <span class="n">cost</span><span class="p">});</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">index</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">trap_size</span> <span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">combination</span><span class="p">(</span><span class="n">max_depth</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bitmask</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">)</span> <span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">solution</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">start</span><span class="p">,</span> <span class="kt">int</span> <span class="n">end</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="n">roads</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">traps</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="kt">int</span> <span class="n">answer</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="kt">int</span> <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="n">trap_size</span> <span class="o">=</span> <span class="n">traps</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+	<span class="n">std</span><span class="o">::</span><span class="n">memset</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="mh">0x3f</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">dist</span><span class="p">));</span> <span class="c1">// 무한대로 초기화</span>
+	<span class="n">g_road</span> <span class="o">=</span> <span class="n">roads</span><span class="p">;</span>
+	<span class="c1">// trap에 번호 부여. 예를 들면, 첫 번째 트랩이 10이면 {10 : 0}</span>
+	<span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="n">i</span> <span class="o">:</span> <span class="n">traps</span><span class="p">){</span>
+		<span class="n">trap_map</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span><span class="o">++</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="c1">//만약 함정을 밟으면, 엣지의 방향이 바뀌므로 미리 다 저장해놓는다.</span>
+	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">trap_size</span> <span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">combination</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="n">pq</span><span class="p">.</span><span class="n">push</span><span class="p">({</span><span class="mi">0</span><span class="p">,</span> <span class="p">{</span><span class="n">start</span><span class="p">,</span> <span class="mi">0</span><span class="p">}});</span>
+	<span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">pq</span><span class="p">.</span><span class="n">empty</span><span class="p">()){</span>
+		<span class="kt">int</span> <span class="n">distance</span> <span class="o">=</span> <span class="o">-</span><span class="n">pq</span><span class="p">.</span><span class="n">top</span><span class="p">().</span><span class="n">first</span><span class="p">;</span>
+		<span class="kt">int</span> <span class="n">node</span> <span class="o">=</span> <span class="n">pq</span><span class="p">.</span><span class="n">top</span><span class="p">().</span><span class="n">second</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+		<span class="kt">int</span> <span class="n">bit</span> <span class="o">=</span> <span class="n">pq</span><span class="p">.</span><span class="n">top</span><span class="p">().</span><span class="n">second</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+		<span class="n">pq</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">bit</span><span class="p">][</span><span class="n">node</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">distance</span><span class="p">)</span>
+			<span class="k">continue</span><span class="p">;</span>
+		<span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="n">i</span> <span class="o">:</span> <span class="n">g_map</span><span class="p">[</span><span class="n">bit</span><span class="p">][</span><span class="n">node</span><span class="p">])</span> <span class="p">{</span>
+			<span class="kt">int</span> <span class="n">next</span> <span class="o">=</span> <span class="n">i</span><span class="p">.</span><span class="n">first</span><span class="p">;</span>
+			<span class="kt">int</span> <span class="n">next_distance</span> <span class="o">=</span> <span class="n">i</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+			<span class="c1">// 다음것이 트랩일때</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">is_trap</span><span class="p">(</span><span class="n">next</span><span class="p">))</span> <span class="p">{</span>
+				<span class="k">if</span> <span class="p">(</span><span class="n">bit</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">trap_map</span><span class="p">[</span><span class="n">next</span><span class="p">]))</span> <span class="p">{</span> <span class="c1">// 트랩을 밟아왔는데, 다음 꺼가 이미 밟았던 트랩이면</span>
+					<span class="kt">int</span> <span class="n">next_bit</span> <span class="o">=</span> <span class="n">bit</span> <span class="o">^</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">trap_map</span><span class="p">[</span><span class="n">next</span><span class="p">]);</span><span class="c1">// 트랩 밟은걸 없앰</span>
+					<span class="k">if</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">next_bit</span><span class="p">][</span><span class="n">next</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">distance</span> <span class="o">+</span> <span class="n">next_distance</span><span class="p">)</span>
+				    		<span class="k">continue</span><span class="p">;</span>
+					<span class="n">dist</span><span class="p">[</span><span class="n">next_bit</span><span class="p">][</span><span class="n">next</span><span class="p">]</span> <span class="o">=</span> <span class="n">distance</span> <span class="o">+</span> <span class="n">next_distance</span><span class="p">;</span>
+					<span class="n">pq</span><span class="p">.</span><span class="n">push</span><span class="p">({</span><span class="o">-</span><span class="p">(</span><span class="n">distance</span> <span class="o">+</span> <span class="n">next_distance</span><span class="p">),</span> <span class="p">{</span><span class="n">next</span><span class="p">,</span> <span class="n">next_bit</span><span class="p">}});</span>
+				<span class="p">}</span>
+				<span class="k">else</span> <span class="p">{</span>
+					<span class="kt">int</span> <span class="n">next_bit</span> <span class="o">=</span> <span class="n">bit</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">trap_map</span><span class="p">[</span><span class="n">next</span><span class="p">];</span>
+					<span class="k">if</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">next_bit</span><span class="p">][</span><span class="n">next</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">distance</span> <span class="o">+</span> <span class="n">next_distance</span><span class="p">)</span>
+						<span class="k">continue</span><span class="p">;</span>
+					<span class="n">dist</span><span class="p">[</span><span class="n">next_bit</span><span class="p">][</span><span class="n">next</span><span class="p">]</span> <span class="o">=</span> <span class="n">distance</span> <span class="o">+</span> <span class="n">next_distance</span><span class="p">;</span>
+					<span class="n">pq</span><span class="p">.</span><span class="n">push</span><span class="p">({</span><span class="o">-</span><span class="p">(</span><span class="n">distance</span> <span class="o">+</span> <span class="n">next_distance</span><span class="p">),</span> <span class="p">{</span><span class="n">next</span><span class="p">,</span> <span class="n">next_bit</span><span class="p">}});</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+			<span class="k">else</span> <span class="p">{</span>
+				<span class="k">if</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">bit</span><span class="p">][</span><span class="n">next</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">distance</span> <span class="o">+</span> <span class="n">next_distance</span><span class="p">)</span>
+					<span class="k">continue</span><span class="p">;</span>
+				<span class="n">dist</span><span class="p">[</span><span class="n">bit</span><span class="p">][</span><span class="n">next</span><span class="p">]</span> <span class="o">=</span> <span class="n">distance</span> <span class="o">+</span> <span class="n">next_distance</span><span class="p">;</span>
+				<span class="n">pq</span><span class="p">.</span><span class="n">push</span><span class="p">({</span><span class="o">-</span><span class="p">(</span><span class="n">distance</span> <span class="o">+</span> <span class="n">next_distance</span><span class="p">),</span> <span class="p">{</span><span class="n">next</span><span class="p">,</span> <span class="n">bit</span><span class="p">}});</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="n">answer</span> <span class="o">=</span> <span class="n">MAX</span><span class="p">;</span>
+	<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">1024</span> <span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">answer</span> <span class="o">&gt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">end</span><span class="p">])</span>
+			<span class="n">answer</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">end</span><span class="p">];</span>
+	<span class="k">return</span> <span class="n">answer</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p><img src="https://user-images.githubusercontent.com/46598292/129515404-bc0e0137-2a7c-48eb-8156-015b43c85c48.png" alt="image" /></p>
+
+<h3 id="회고">회고</h3>
+
+<ul>
+  <li>너무 어려웠습니다</li>
+</ul>
+:ET

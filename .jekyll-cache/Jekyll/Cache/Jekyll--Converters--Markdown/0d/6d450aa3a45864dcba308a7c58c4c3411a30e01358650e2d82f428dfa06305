@@ -1,0 +1,128 @@
+I"�<h2 id="-정규-표현식이란-">💡 정규 표현식이란 ?</h2>
+
+<p>특정한 규칙을 가진 문자열의 집합을 표현하는 데 사용하는 형식 언어입니다.</p>
+
+<p><br /></p>
+<h2 id="-여러가지-표현-방법-메타-문자">💡 여러가지 표현 방법 (메타 문자)</h2>
+
+<h3>^</h3>
+
+<p>문자열 또는 줄의 시작을 지정합니다. 예를 들어 ^0은 0으로 시작하는 문자열과 일치합니다. [^0]처럼 ^ 문자가 대괄호 안에 들어 있다면, ^는 시작하지 않는다는 뜻입니다.</p>
+
+<h3 id="-1">?</h3>
+
+<p>물음표 (?)는 앞에 있는 문자 또는 그룹 0 또는 1개와 일치합니다. For example, 12?3은 123 또는 13과 일치합니다.</p>
+
+<h3 id="-2">(…)</h3>
+
+<p>괄호는 문자 그룹을 정의하여, 괄호 내 쌍이 그룹을 형성합니다. 이는 이미지 파일 이름에서 정보를 추출할 때 매우 유용합니다. 예를 들어, 이미지들이 Good_0001.png처럼 특정한 이름 지정 규칙을 따랐는데, 이 이미지들만을 반환하고 싶으면, ^(Good.+).png$와 같이 쓸 수 있습니다.</p>
+
+<h3 id="-3">+</h3>
+
+<p>앞의 표현식이 1회 이상 연속으로 반복되는 부분과 대응됩니다.</p>
+
+<h3 id="-4">.</h3>
+
+<p>. 기호는 아무거나 다 매칭됩니다. 띄어쓰기 또한 매치됩니다.</p>
+
+<h3 id="-">[ ]</h3>
+
+<p>[ ]사이에 들어간 문자 중 하나를 매치합니다. ex&gt; [abc]는 ab, ac, bc를 모두 포함</p>
+
+<h3 id="-5">?=</h3>
+
+<p>Lookahead입니다. 정규식에서 ?= 메타문자로 input 문자를 필터링 할 수 있는데, 이 것은 그룹의 패턴을 차례대로 일치하는지 살펴보겠다는 말입니다.</p>
+
+<p><br /></p>
+<h2 id="-실습">💡 실습</h2>
+
+<p><a href="https://regex101.com/">https://regex101.com/</a></p>
+
+<p>위 링크를 통해 정규표현식을 사용한 결과를 바로바로 확인할 수 있습니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>www.facebook.com:2021/?key=1&amp;key=2
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>정규표현식을 사용하여 [“<a href="http://www.facebook.com/">www.facebook.com</a>”, “2021”, “key=1&amp;key2”] 으로 나눠보겠습니다.</p>
+
+<ol>
+  <li>
+    <p>”:” 를 기준으로 나눕니다.</p>
+
+    <p><img src="https://user-images.githubusercontent.com/46598292/129666727-97ec2496-af70-4e0f-8ca5-fe5ee96b6ab3.png" alt="https://user-images.githubusercontent.com/46598292/129666727-97ec2496-af70-4e0f-8ca5-fe5ee96b6ab3.png" /></p>
+
+    <ul>
+      <li>()는 그룹을 의미합니다.</li>
+      <li>[] 안에 ^는 그 뒤에 내용이 아니라는 뜻입니다.</li>
+      <li>”+” 앞에 “[^:]”가 1번 이상 반복되는 부분과 대응되므로, “:”를 기준으로 그룹이 나뉘어 집니다.</li>
+    </ul>
+  </li>
+  <li>
+    <p>”/?”앞 까지 나눕니다.</p>
+
+    <p><img src="https://user-images.githubusercontent.com/46598292/129666580-e6ce534b-56eb-4562-bcbb-f659c21a37b0.png" alt="https://user-images.githubusercontent.com/46598292/129666580-e6ce534b-56eb-4562-bcbb-f659c21a37b0.png" /></p>
+
+    <ul>
+      <li>?는 있어도 되고 없어도 된다는 뜻입니다. 따라서 :와 2021은 있어도 되고, 없어도 됩니다.</li>
+      <li>[0-9]는 숫자라는 뜻입니다.</li>
+      <li>{4}는 4번 반복된다는 뜻입니다.</li>
+    </ul>
+  </li>
+  <li>
+    <p>”/?” 뒤를 묶습니다.</p>
+
+    <p><img src="https://user-images.githubusercontent.com/46598292/129666947-31cd5b98-b80f-4a4f-9a84-f44d70d8adc8.png" alt="https://user-images.githubusercontent.com/46598292/129666947-31cd5b98-b80f-4a4f-9a84-f44d70d8adc8.png" /></p>
+  </li>
+</ol>
+
+<h3 id="실제로-사용해보기">실제로 사용해보기</h3>
+
+<p>그룹을 나눴으니, 실제로 어떻게 사용하는지 알아보겠습니다.</p>
+
+<p><img src="https://user-images.githubusercontent.com/46598292/129667294-a84dc0bb-ce37-445e-82b8-818b36fae0a1.png" alt="https://user-images.githubusercontent.com/46598292/129667294-a84dc0bb-ce37-445e-82b8-818b36fae0a1.png" /></p>
+
+<p>위 코드를 실행하면 다음과 같습니다.</p>
+
+<p><img src="https://user-images.githubusercontent.com/46598292/129667448-bee873a1-f239-477e-a605-989e6a11b00e.png" alt="https://user-images.githubusercontent.com/46598292/129667448-bee873a1-f239-477e-a605-989e6a11b00e.png" /></p>
+
+<p>Array 형태로 나오는데(실제로는 object), 첫 번째 인덱스는 전체 문자열이고, 두 번째 인덱스 부터는 정규 표현식으로 나눈 문자열들이 나오게 됩니다.</p>
+
+<hr />
+
+<h3 id="그룹-이름-지정하기">그룹 이름 지정하기</h3>
+
+<ul>
+  <li>위에서 나눈 그룹들에 이름을 지정할 수 있습니다. regex101 에서 그룹을 지정하면, 그룹 이름도 확인할 수 있습니다.</li>
+</ul>
+
+<p><img src="https://user-images.githubusercontent.com/46598292/129667912-ccd82143-ebe3-4f28-827e-abdef46284e2.png" alt="https://user-images.githubusercontent.com/46598292/129667912-ccd82143-ebe3-4f28-827e-abdef46284e2.png" /></p>
+
+<p><img src="https://user-images.githubusercontent.com/46598292/129667963-abdd17ed-68cc-44b7-933e-aa730589e832.png" alt="https://user-images.githubusercontent.com/46598292/129667963-abdd17ed-68cc-44b7-933e-aa730589e832.png" /></p>
+
+<h3 id="실제로-사용해보기-1">실제로 사용해보기</h3>
+
+<ul>
+  <li>그룹 이름을 지정하기 전과 다르게, 이번에는 groups가 undefined가 아닙니다.</li>
+</ul>
+
+<p><img src="https://user-images.githubusercontent.com/46598292/129668091-c9d35771-f2dc-4d25-9ac3-f34e989bb665.png" alt="https://user-images.githubusercontent.com/46598292/129668091-c9d35771-f2dc-4d25-9ac3-f34e989bb665.png" /></p>
+
+<ul>
+  <li>그룹 이름이 “facebook”인 것에 접근을 하면, facebook에 해당하는 값이 나오게 됩니다.</li>
+</ul>
+
+<p><img src="https://user-images.githubusercontent.com/46598292/129668406-27c62cc0-ca6c-439b-9ef8-aab423edffb6.png" alt="https://user-images.githubusercontent.com/46598292/129668406-27c62cc0-ca6c-439b-9ef8-aab423edffb6.png" /></p>
+
+<p><img src="https://user-images.githubusercontent.com/46598292/129668527-c561b999-a539-47df-b570-607dbca0d2cd.png" alt="https://user-images.githubusercontent.com/46598292/129668527-c561b999-a539-47df-b570-607dbca0d2cd.png" /></p>
+
+<h3 id="참고-자료">참고 자료</h3>
+
+<p><a href="https://www.regular-expressions.info/refext.html">https://www.regular-expressions.info/refext.html</a></p>
+
+<p><a href="https://ko.wikipedia.org/wiki/%EC%A0%95%EA%B7%9C_%ED%91%9C%ED%98%84%EC%8B%9D">https://ko.wikipedia.org/wiki/정규_표현식</a></p>
+
+<p><a href="https://zzossig.io/posts/regexp/grouping_in_regular_expressions/">https://zzossig.io/posts/regexp/grouping_in_regular_expressions/</a></p>
+
+<p><a href="https://junsik-hwang.tistory.com/63">https://junsik-hwang.tistory.com/63</a></p>
+:ET
